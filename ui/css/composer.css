@@ -1,0 +1,384 @@
+/* Composer area: attachments strip, queue chips, input row, widgets,
+ * slash-command autocomplete popup. */
+
+#composer-area {
+ position: relative;
+ padding: 8px 16px calc(14px + env(safe-area-inset-bottom));
+ background: linear-gradient(to top, var(--bg) 72%, transparent);
+}
+
+#composer {
+ max-width: 840px;
+ margin: 0 auto;
+ border: 1px solid var(--border-strong);
+ border-radius: var(--r-lg);
+ background: var(--surface);
+ box-shadow: 0 4px 18px rgba(0, 0, 0, 0.22);
+ transition: border-color 160ms ease;
+}
+@media (prefers-color-scheme: light) {
+ #composer {
+  box-shadow: 0 4px 18px rgba(30, 32, 44, 0.08);
+ }
+}
+#composer:focus-within {
+ border-color: color-mix(in srgb, var(--accent) 60%, var(--border-strong));
+}
+
+.composer-row {
+ display: flex;
+ align-items: flex-end;
+ gap: 6px;
+ padding: 7px 8px;
+}
+
+#input {
+ flex: 1;
+ min-width: 0;
+ resize: none;
+ border: none;
+ background: none;
+ color: var(--text);
+ font: inherit;
+ font-size: 14.5px;
+ line-height: 1.5;
+ padding: 6px 4px;
+ max-height: 40vh;
+}
+#input:focus {
+ outline: none;
+ caret-color: var(--accent);
+}
+#input::placeholder {
+ color: var(--text-faint);
+}
+
+#input-hint {
+ display: none;
+}
+
+.btn.send {
+ flex: none;
+ padding: 8px 11px;
+ border-radius: var(--r);
+}
+.btn.stop {
+ flex: none;
+ padding: 8px 12px;
+ border-radius: var(--r);
+}
+
+/* Send / stop / mode-chip swap places when a turn starts: identical
+ * explicit height keeps the composer row from jumping. */
+#btn-send,
+#btn-stop,
+#mode-chip {
+ flex: none;
+ height: 34px;
+ align-self: flex-end;
+}
+
+.chip-btn.mode {
+ border-color: var(--accent);
+ color: var(--accent-strong);
+ background: var(--accent-dim);
+}
+
+/* Attachments strip */
+#attachments {
+ display: flex;
+ gap: 8px;
+ flex-wrap: wrap;
+ padding: 10px 12px 0;
+}
+.attach-thumb {
+ position: relative;
+ width: 56px;
+ height: 56px;
+ border-radius: var(--r-sm);
+ overflow: visible;
+ border: 1px solid var(--border-strong);
+}
+.attach-thumb img {
+ width: 100%;
+ height: 100%;
+ object-fit: cover;
+ border-radius: calc(var(--r-sm) - 1px);
+ display: block;
+}
+.attach-remove {
+ position: absolute;
+ top: -7px;
+ right: -7px;
+ width: 18px;
+ height: 18px;
+ border-radius: 50%;
+ border: 1px solid var(--border-strong);
+ background: var(--surface-3);
+ color: var(--text);
+ font-size: 12px;
+ line-height: 1;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ cursor: pointer;
+ box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+.attach-remove:hover {
+ border-color: var(--err);
+ color: var(--err);
+}
+
+/* Queue chips */
+#queue-chips {
+ display: flex;
+ gap: 6px;
+ flex-wrap: wrap;
+ max-width: 840px;
+ margin: 0 auto 8px;
+}
+.queue-chip {
+ display: inline-flex;
+ align-items: baseline;
+ gap: 5px;
+ max-width: 100%;
+ padding: 3px 11px;
+ border-radius: 0;
+ border: 1px dashed var(--border-strong);
+ background: var(--surface);
+ font-size: 12px;
+ color: var(--text-dim);
+ white-space: nowrap;
+ overflow: hidden;
+ text-overflow: ellipsis;
+}
+.queue-chip.more {
+ color: var(--text-faint);
+}
+.queue-kind {
+ flex: none;
+ font-size: 10.5px;
+ letter-spacing: 0.05em;
+ text-transform: uppercase;
+}
+.queue-chip.steer .queue-kind {
+ color: var(--accent);
+}
+.queue-chip.follow-up .queue-kind {
+ color: var(--ok);
+}
+
+/* Widgets (extension setWidget) */
+.widget {
+ max-width: 840px;
+ margin: 0 auto 8px;
+ padding: 9px 13px;
+ border: 1px solid var(--border);
+ border-radius: var(--r);
+ background: var(--surface);
+ font-family: var(--mono);
+ font-size: 12px;
+ line-height: 1.55;
+ color: var(--text-dim);
+ white-space: pre-wrap;
+ overflow-x: auto;
+}
+[hidden] {
+ display: none !important;
+}
+
+/* Slash-command autocomplete */
+#autocomplete {
+ position: absolute;
+ left: 50%;
+ bottom: calc(100% - 4px);
+ transform: translateX(-50%);
+ z-index: 60;
+ width: min(520px, calc(100vw - 32px));
+ max-height: 280px;
+ overflow-y: auto;
+ border: 1px solid var(--border-strong);
+ border-radius: var(--r-lg);
+ background: var(--surface);
+ box-shadow: var(--shadow);
+ padding: 5px;
+ animation: pop-in 130ms ease;
+}
+.ac-item {
+ appearance: none;
+ display: flex;
+ align-items: baseline;
+ gap: 10px;
+ width: 100%;
+ padding: 7px 10px;
+ border: none;
+ border-radius: var(--r-sm);
+ background: none;
+ color: inherit;
+ font: inherit;
+ font-size: 13.5px;
+ text-align: left;
+ cursor: pointer;
+}
+.ac-item.sel {
+ background: var(--accent-dim);
+}
+.ac-name {
+ flex: none;
+ font-family: var(--mono);
+ font-size: 12.5px;
+ color: var(--accent-strong);
+}
+.ac-desc {
+ flex: 1;
+ min-width: 0;
+ font-size: 12.5px;
+ color: var(--text-dim);
+ white-space: nowrap;
+ overflow: hidden;
+ text-overflow: ellipsis;
+}
+.ac-src {
+ flex: none;
+ font-size: 10px;
+ letter-spacing: 0.05em;
+ text-transform: uppercase;
+ padding: 1px 7px;
+ border-radius: 0;
+ border: 1px solid var(--border-strong);
+ color: var(--text-faint);
+}
+
+.dragging {
+ outline: 2px dashed var(--accent);
+ outline-offset: -2px;
+ border-radius: var(--r-lg);
+}
+
+@media (max-width: 600px) {
+ #composer-area,
+ #composer,
+ .composer-row {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: clip;
+  overscroll-behavior-x: none;
+ }
+
+ #composer-area {
+  padding: 8px 10px max(10px, env(safe-area-inset-bottom));
+ }
+
+ .composer-row {
+  position: relative;
+  align-items: center;
+  gap: 4px;
+  padding: 6px;
+ }
+
+ #input {
+  min-width: 0;
+  align-self: center;
+  padding: 4px 4px 8px;
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
+  touch-action: pan-y;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  font-size: 16px;
+  max-height: 34dvh;
+ }
+
+ #input::placeholder {
+  color: transparent;
+ }
+
+ #input-hint {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 58px;
+  right: 58px;
+  display: block;
+  transform: translateY(-50%) translateY(-2px);
+  overflow: hidden;
+  color: var(--text-faint);
+  font-size: 16px;
+  line-height: 1.5;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  pointer-events: none;
+ }
+
+ #btn-attach,
+ #btn-send,
+ #btn-stop {
+  position: relative;
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
+  padding: 0;
+  align-self: center;
+  justify-content: center;
+  border-color: transparent;
+  background: transparent;
+ }
+
+ #btn-attach::before,
+ #btn-send::before,
+ #btn-stop::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 32px;
+  height: 32px;
+  box-sizing: border-box;
+  transform: translate(-50%, -50%);
+  border: 1px solid var(--border-strong);
+  background: var(--surface-2);
+ }
+
+ #btn-send::before {
+  border-color: var(--accent);
+  background: var(--accent);
+ }
+
+ #btn-stop::before {
+  border-color: var(--err);
+  background: color-mix(in srgb, var(--err) 22%, var(--surface-2));
+ }
+
+ #btn-attach > svg,
+ #btn-send > svg,
+ #btn-stop > svg {
+  position: relative;
+  z-index: 1;
+ }
+
+ #mode-chip {
+  min-height: 44px;
+  max-width: 104px;
+ }
+
+ #autocomplete {
+  width: calc(100vw - 20px);
+  max-height: min(42dvh, 300px);
+ }
+
+ .widget,
+ #queue-chips,
+ #attachments {
+  min-width: 0;
+  max-width: 100%;
+ }
+}
+
+/* Gated composer: no project chosen yet */
+#composer.gated {
+ opacity: 0.55;
+}
+#composer.gated #input {
+ cursor: pointer;
+}

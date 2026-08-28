@@ -1,0 +1,59 @@
+{
+  "name": "pi-rpc-web",
+  "version": "0.1.0",
+  "description": "Headless RPC-powered browser interface for the pi coding agent",
+  "type": "module",
+  "license": "MIT",
+  "keywords": [
+    "pi-package",
+    "pi-coding-agent",
+    "web-ui",
+    "rpc",
+    "remote"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tohlh/pi-rpc-web.git"
+  },
+  "homepage": "https://github.com/tohlh/pi-rpc-web#readme",
+  "bugs": {
+    "url": "https://github.com/tohlh/pi-rpc-web/issues"
+  },
+  "files": [
+    "src/",
+    "ui/",
+    "media/",
+    "README.md",
+    "CONTRACT.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "node test/ws.test.mjs && node --experimental-strip-types test/lan-auth-test.mjs && node --experimental-strip-types test/server-auth-test.mjs && node test/e2e.mjs && node --experimental-strip-types test/rpc-web-mode-test.mjs && node test/headless-smoke.mjs && node test/lan-smoke.mjs",
+    "test:mobile-ui": "node --experimental-strip-types test/mobile-ui-test.mjs",
+    "prepublishOnly": "npm run typecheck && npm test"
+  },
+  "pi": {
+    "extensions": [
+      "./src/extension.ts"
+    ],
+    "image": "https://raw.githubusercontent.com/tohlh/pi-rpc-web/main/media/pi-rpc-web.png"
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*"
+  },
+  "devDependencies": {
+    "@earendil-works/pi-coding-agent": "^0.84.2",
+    "@types/jsdom": "^30.0.0",
+    "@types/node": "^22.20.1",
+    "jsdom": "^24.1.3",
+    "puppeteer-core": "^25.8.0",
+    "typescript": "^5.9.3"
+  }
+}

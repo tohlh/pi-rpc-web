@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <meta name="color-scheme" content="dark light" />
+    <meta
+      name="theme-color"
+      content="#0b0b14"
+      media="(prefers-color-scheme: dark)"
+    />
+    <title>pi-rpc-web</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='6' y='6' width='20' height='20' rx='6' transform='rotate(45 16 16)' fill='%2300e5ff'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/sidebar.css" />
+    <link rel="stylesheet" href="css/header.css" />
+    <link rel="stylesheet" href="css/chat.css" />
+    <link rel="stylesheet" href="css/composer.css" />
+    <link rel="stylesheet" href="css/dialogs.css" />
+  </head>
+  <body>
+    <div id="crt" aria-hidden="true"></div>
+    <div id="app">
+      <aside id="sidebar" aria-label="Sessions sidebar">
+        <div class="side-head">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span class="brand"
+            >pi<span class="brand-dim">&middot;rpc&middot;web</span></span
+          >
+        </div>
+        <button
+          id="project-line"
+          class="project-line"
+          type="button"
+          hidden
+          title=""
+        ></button>
+
+        <button id="btn-new" class="btn primary new-chat" type="button">
+          <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+            <path
+              d="M8 3v10M3 8h10"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+            />
+          </svg>
+          New chat
+        </button>
+
+        <div class="side-section">
+          <span>Sessions</span>
+          <button
+            id="btn-refresh-sessions"
+            class="icon-btn"
+            aria-label="Refresh sessions"
+            type="button"
+          >
+            <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">
+              <path
+                d="M13.5 8a5.5 5.5 0 1 1-1.6-3.9M13.5 1.8v2.7h-2.7"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+        </div>
+        <nav id="sessions" aria-label="Session list"></nav>
+        <button
+          id="hidden-projects"
+          class="hidden-chip"
+          type="button"
+          hidden
+        ></button>
+        <div class="side-foot">localhost &middot; offline-first</div>
+      </aside>
+      <div id="sidebar-backdrop" aria-hidden="true"></div>
+
+      <main id="main">
+        <header id="topbar">
+          <button
+            id="btn-menu"
+            class="icon-btn"
+            aria-label="Toggle sidebar"
+            type="button"
+          >
+            <svg viewBox="0 0 18 18" width="16" height="16" aria-hidden="true">
+              <path
+                d="M2.5 4.5h13M2.5 9h13M2.5 13.5h13"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+              />
+            </svg>
+          </button>
+          <h1 id="session-title">pi</h1>
+          <span
+            id="conn-dot"
+            class="dot idle"
+            role="status"
+            aria-label="Idle"
+            title="Idle"
+          ></span>
+          <span id="status-text" hidden></span>
+          <div class="tb-spacer"></div>
+          <div id="stats" title="Session statistics">
+            <div id="ctx-wrap" title="Context window usage">
+              <div id="ctx-bar"><div id="ctx-fill"></div></div>
+              <span id="ctx-pct">&mdash;</span>
+            </div>
+            <span id="tok-total" title="Total tokens"></span>
+            <span id="cost-total" title="Total cost"></span>
+          </div>
+          <button
+            id="btn-thinking"
+            class="chip-btn"
+            type="button"
+            aria-haspopup="dialog"
+          >
+            thinking
+          </button>
+          <button
+            id="btn-model"
+            class="chip-btn"
+            type="button"
+            aria-haspopup="dialog"
+          >
+            model
+          </button>
+        </header>
+
+        <div
+          id="banner"
+          class="banner"
+          role="status"
+          aria-live="assertive"
+          hidden
+        ></div>
+
+        <div id="chat-scroll">
+          <ol id="stream"></ol>
+          <div id="chat-empty" class="chat-empty">
+            <span class="mini-spinner" aria-hidden="true"></span>
+            <span class="chat-empty-text">Connecting&hellip;</span>
+          </div>
+          <div id="working-bar" role="status" aria-live="polite" hidden>
+            <span class="wb-blocks" aria-hidden="true"
+              ><i></i><i></i><i></i
+            ></span>
+            <span class="wb-label">pi is working&hellip;</span>
+          </div>
+        </div>
+
+        <button
+          id="jump-latest"
+          type="button"
+          aria-label="Jump to latest message"
+        >
+          <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
+            <path
+              d="M8 2v11M3.5 8.5 8 13l4.5-4.5"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.7"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          Jump to latest
+        </button>
+
+        <div id="composer-area">
+          <div id="widget-above" hidden></div>
+          <div id="queue-chips" hidden></div>
+          <form id="composer" autocomplete="off">
+            <div id="attachments" hidden></div>
+            <div class="composer-row">
+              <button
+                id="btn-attach"
+                class="icon-btn"
+                aria-label="Attach image"
+                type="button"
+              >
+                <svg
+                  viewBox="0 0 18 18"
+                  width="16"
+                  height="16"
+                  aria-hidden="true"
+                >
+                  <rect
+                    x="2.5"
+                    y="2.5"
+                    width="13"
+                    height="13"
+                    rx="3"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.4"
+                  />
+                  <circle cx="6.6" cy="6.6" r="1.4" fill="currentColor" />
+                  <path
+                    d="m4 13 3.2-3.2a1.4 1.4 0 0 1 2 0L13 13.5M11 11l1.4-1.4a1.4 1.4 0 0 1 2 0L16 11"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.4"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </button>
+              <textarea
+                id="input"
+                rows="1"
+                placeholder="Message pi&hellip;"
+                aria-label="Message"
+              ></textarea>
+              <span id="input-hint" aria-hidden="true">Message pi&hellip;</span>
+              <button
+                id="btn-send"
+                class="btn primary send"
+                type="button"
+                aria-label="Send message"
+              >
+                <svg
+                  viewBox="0 0 16 16"
+                  width="15"
+                  height="15"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M8 13V3M3.5 7.5 8 3l4.5 4.5"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </button>
+              <button
+                id="btn-stop"
+                class="btn danger stop"
+                type="button"
+                aria-label="Stop generating"
+                hidden
+              >
+                <svg
+                  viewBox="0 0 16 16"
+                  width="13"
+                  height="13"
+                  aria-hidden="true"
+                >
+                  <rect
+                    x="3.5"
+                    y="3.5"
+                    width="9"
+                    height="9"
+                    rx="2"
+                    fill="currentColor"
+                  />
+                </svg>
+              </button>
+              <button id="mode-chip" class="chip-btn mode" type="button" hidden>
+                &#9654; Steer
+              </button>
+            </div>
+          </form>
+          <div id="widget-below" hidden></div>
+          <div
+            id="autocomplete"
+            role="listbox"
+            aria-label="Command autocomplete"
+            hidden
+          ></div>
+        </div>
+      </main>
+    </div>
+
+    <div id="toasts" aria-live="polite"></div>
+    <div id="modal-root"></div>
+    <input type="file" id="file-input" accept="image/*" multiple hidden />
+
+    <script type="module" src="js/main.js"></script>
+  </body>
+</html>

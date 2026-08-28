@@ -1,0 +1,9 @@
+node_modules/
+*.log
+*.tgz
+.DS_Store
+
+# Local development artifacts
+.superpowers/
+docs/superpowers/
+/extension.ts
